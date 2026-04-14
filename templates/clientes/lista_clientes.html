@@ -3,6 +3,14 @@
 {% block content %}
 <h2>Clientes</h2>
 
+<!--campo para realizar a filtragem entre ativos e todos-->
+<p>
+    <a href="{% url 'lista_clientes' %}">Ver apenas ativos</a>
+    |
+    <a href="{% url 'lista_clientes' %}?todos=1">Ver todos</a>
+</p>
+
+
 <table>
     <thead>
         <tr>
@@ -10,6 +18,7 @@
             <th>Nome</th>
             <th>E-mail</th>
             <th>Tipo</th>
+            <th>Ações</th>
             <th>Criado em</th>
         </tr>
     </thead>
@@ -20,6 +29,16 @@
             <td>{{ cliente.nome }}</td>
             <td>{{ cliente.email }}</td>
             <td>{{ cliente.get_tipo_display }}</td>
+            <td>
+                {% if cliente.ativo %}
+                    <form method="post" action="{% url 'inativar_cliente' cliente.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Inativar</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'reativar_cliente' cliente.id %}">Reativar</a>
+                {% endif %}
+            </td>
             <td>{{ cliente.criado_em }}</td>
         </tr>
         {% empty %}
