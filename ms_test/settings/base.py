@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -20,7 +21,11 @@ def load_dotenv() -> None:
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-teste-mbweb-dev-junior")
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ImproperlyConfigured(
+        "SECRET_KEY não configurada. Defina SECRET_KEY no arquivo .env."
+    )
 DEBUG = False
 ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS", "").split(",") if host]
 

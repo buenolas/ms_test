@@ -93,7 +93,6 @@ No backend (Django + DRF):
 - Organização do projeto com settings por ambiente:
 - `ms_test/settings/base.py`
 - `ms_test/settings/dev.py`
-- `ms_test/settings/prod.py`
 - Padronização da camada DRF com paginação, renderers/parsers e tratamento padrão de exceções.
 - Reorganização dos testes em módulos:
 - `clientes/tests/test_api_clientes.py`
@@ -141,6 +140,7 @@ Backend (Django):
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
+copy .env.example .env
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_clientes
