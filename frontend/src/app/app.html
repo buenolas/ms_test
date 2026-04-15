@@ -1,0 +1,50 @@
+<main class="container">
+  <header class="header">
+    <h1>Clientes</h1>
+    <label class="toggle">
+      <input type="checkbox" [(ngModel)]="mostrarTodos" (change)="carregarClientes()" />
+      Mostrar inativos
+    </label>
+  </header>
+
+  @if (erro) {
+    <p class="error">{{ erro }}</p>
+  }
+
+  @if (carregando) {
+    <p>Carregando clientes...</p>
+  } @else {
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Tipo</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cliente of clientes; track cliente.id) {
+          <tr>
+            <td>{{ cliente.id }}</td>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.email }}</td>
+            <td>{{ cliente.tipo }}</td>
+            <td>{{ cliente.ativo ? 'Ativo' : 'Inativo' }}</td>
+            <td>
+              <button type="button" (click)="alternarAtivo(cliente)">
+                {{ cliente.ativo ? 'Inativar' : 'Reativar' }}
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6">Nenhum cliente encontrado.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</main>

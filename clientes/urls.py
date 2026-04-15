@@ -1,8 +1,9 @@
-from django.urls import path
-from .views import lista_clientes, inativar_cliente, reativar_cliente
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path("", lista_clientes, name="lista_clientes"),
-    path("<int:cliente_id>/inativar/", inativar_cliente, name="inativar_cliente"),
-    path("<int:cliente_id>/reativar/", reativar_cliente, name="reativar_cliente"),
-]
+from .views import ClienteViewSet
+
+# Define as rotas para a API de clientes usando um router do Django REST Framework, registrando o viewset de clientes com o prefixo "clientes" e o basename "cliente"
+router = DefaultRouter()
+router.register("clientes", ClienteViewSet, basename="cliente")
+
+urlpatterns = router.urls

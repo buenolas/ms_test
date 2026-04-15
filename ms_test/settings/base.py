@@ -1,10 +1,28 @@
+import os
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-teste-mbweb-dev-junior"
-DEBUG = True
-ALLOWED_HOSTS = []
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+
+def load_dotenv() -> None:
+    env_path = BASE_DIR / ".env"
+    if not env_path.exists():
+        return
+
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or "=" not in stripped:
+            continue
+        key, value = stripped.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-teste-mbweb-dev-junior")
+DEBUG = False
+ALLOWED_HOSTS = [host for host in os.getenv("ALLOWED_HOSTS", "").split(",") if host]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -13,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "clientes",
 ]
 
@@ -44,6 +63,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "ms_test.wsgi.application"
+ASGI_APPLICATION = "ms_test.asgi.application"
 
 DATABASES = {
     "default": {
@@ -61,3 +81,18 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",
+    ],
+    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
+}

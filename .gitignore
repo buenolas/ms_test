@@ -51,10 +51,19 @@ staticfiles/
 # Environments
 .env
 .env.*
+!.env.example
 .venv/
 venv/
 env/
 ENV/
+
+# Frontend (Angular / Node)
+node_modules/
+.angular/
+.npm-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # Type checkers / linters
 .mypy_cache/
