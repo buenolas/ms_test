@@ -83,51 +83,40 @@ python manage.py runserver
 ### 6.1. O que foi feito
 
 No backend (Django + DRF):
-- Adição e uso do campo `ativo` no model `Cliente`.
-- Criação de API REST com Django REST Framework para o recurso de clientes.
-- Implementação de listagem com regra de negócio:
-- `GET /api/clientes/` retorna apenas clientes ativos por padrão.
-- `GET /api/clientes/?todos=1` retorna ativos e inativos.
-- Implementação de inativação/reativação via:
-- `PATCH /api/clientes/<id>/` com payload `{ "ativo": true/false }`.
-- Organização do projeto com settings por ambiente:
+- Adição do campo `ativo` no model `Cliente`.
+- Criação de endpoints com Django REST Framework para listagem e atualização de clientes.
+- Implementação da regra de negócio para exibir apenas clientes ativos por padrão.
+- Implementação de filtro opcional para listar também os clientes inativos com `GET /api/clientes/?todos=1`.
+- Implementação de inativação e reativação via `PATCH /api/clientes/<id>/`, atualizando apenas o campo `ativo`.
+- Atualização do comando `seed_clientes` para gerar uma massa de dados com clientes ativos e inativos, mantendo comportamento idempotente.
+- Reforço dos testes automatizados para cobrir os principais cenários da API e do seed.
+- Organização do projeto com separação de settings em:
 - `ms_test/settings/base.py`
 - `ms_test/settings/dev.py`
-- Padronização da camada DRF com paginação, renderers/parsers e tratamento padrão de exceções.
-- Reorganização dos testes em módulos:
-- `clientes/tests/test_api_clientes.py`
-- `clientes/tests/test_seed_clientes.py`
-- Atualização do comando `seed_clientes` para manter idempotência e preencher corretamente o campo `ativo`.
 
 No frontend (Angular):
-- Criação de um novo projeto frontend separado em `frontend/`.
-- Implementação de consumo dos endpoints do backend:
+- Criação de um projeto frontend separado em `frontend/`.
+- Consumo dos endpoints do backend para:
 - listagem de clientes
-- filtro para incluir inativos
-- ação de inativar/reativar por botão
-- Criação de service para centralizar chamadas HTTP (`clientes-api.service.ts`).
-- Uso de proxy local (`proxy.conf.json`) para facilitar integração backend/frontend durante desenvolvimento.
+- filtro para exibir todos os clientes
+- ação de inativar e reativar por botão
+- Criação de um service para centralizar a comunicação HTTP com a API (`clientes-api.service.ts`).
+- Uso de proxy local (`proxy.conf.json`) para facilitar a integração entre frontend e backend durante o desenvolvimento.
 
 ### 6.2. Decisões técnicas tomadas
 
-- Foi escolhida a abordagem RESTful com `PATCH` no próprio recurso `Cliente`, em vez de criar endpoints separados como `/inativar/` e `/reativar/`.
-- O backend foi finalizado antes do frontend para garantir que o Angular consumisse uma API estável e testada.
-- A regra de filtro foi mantida no backend (e não no frontend), preservando a regra de negócio centralizada.
-- A estrutura de testes foi separada por domínio para aumentar legibilidade e manutenção.
-- O frontend foi mantido simples e funcional, alinhado ao objetivo do teste (clareza e organização acima de complexidade).
+- Foi escolhida a abordagem REST com `PATCH` no próprio recurso `Cliente`, em vez de criar endpoints separados para inativar e reativar.
+- A regra de filtro foi mantida no backend, centralizando a regra de negócio no lugar certo.
+- A listagem da API foi mantida sem paginação, para simplificar o consumo no frontend e evitar complexidade desnecessária para o escopo deste teste.
+- O frontend foi mantido simples e direto, priorizando clareza, organização e funcionamento.
+- Os testes foram organizados por responsabilidade, separando cenários da API e do comando de seed.
 
-### 6.3. Observações importantes e desafios
+### 6.3. Observações importantes
 
-Durante a implementação, o principal desafio foi a transição da estrutura inicial baseada em views/templates Django para uma arquitetura orientada a API com DRF.
-
-Como eu ainda não tinha experiência prática com Django REST Framework, tive dificuldade inicial para entender:
-- a estrutura ideal de arquivos (serializer, viewset, router, urls);
-- como adaptar a regra de listagem e atualização para os endpoints DRF;
-- como reorganizar o projeto sem perder clareza.
-
-Para superar esse ponto, conduzi pesquisas em documentação oficial e utilizei IA como apoio para acelerar a produtividade, sempre validando tecnicamente as decisões e o comportamento final do código.
-
-O uso de IA foi um apoio de produtividade e organização, sem substituir entendimento: toda alteração foi testada e revisada para garantir domínio sobre a implementação.
+- O projeto foi ajustado de uma estrutura mais próxima de views/templates para uma arquitetura baseada em API no backend e Angular no frontend.
+- Durante a implementação, busquei manter a solução o mais simples possível, evitando camadas ou recursos desnecessários para o escopo do teste.
+- Também revisei a entrega para remover pontos que poderiam gerar inconsistência, como paginação sem uso no frontend e código legado que não fazia mais parte do fluxo principal.
+- Utilizei documentação oficial e IA como apoio pontual de pesquisa e organização, sempre validando o comportamento final do código e das decisões adotadas.
 
 ### 6.4. Como rodar o projeto completo (backend e frontend)
 
@@ -164,14 +153,13 @@ npm start
 
 Frontend em: `http://localhost:4200`
 
-Observação:
+Observações:
 - O frontend está configurado para consumir o backend via proxy local.
-- Para funcionar corretamente, rode backend e frontend ao mesmo tempo em terminais separados.
+- Para o funcionamento completo da aplicação, backend e frontend devem ser executados ao mesmo tempo em terminais separados.
 
 ### 6.5. Como rodar os testes
-
-Backend:
 
 ```bash
 python manage.py test
 ```
+

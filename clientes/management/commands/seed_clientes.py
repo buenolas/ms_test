@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand
 
 from clientes.models import Cliente, TipoCliente
 
-# Lista de clientes iniciais para popular o banco de dados em ambiente de desenvolvimento
 # Incluído o campo "ativo" para refletir o status de cada cliente
 CLIENTES_INICIAIS = [
     {"nome": "Ana", "email": "ana@email.com", "tipo": TipoCliente.PESSOA_FISICA, "ativo": True},
@@ -15,6 +14,9 @@ CLIENTES_INICIAIS = [
     {"nome": "Helena", "email": "helena@email.com", "tipo": TipoCliente.VIP, "ativo": True},
     {"nome": "Igor", "email": "igor@email.com", "tipo": TipoCliente.PESSOA_FISICA, "ativo": False},
     {"nome": "Juliana", "email": "juliana@email.com", "tipo": TipoCliente.VIP, "ativo": True},
+    {"nome": "Lucas", "email": "lucas@email.com", "tipo": TipoCliente.VIP, "ativo": True},
+    {"nome": "Joao", "email": "joao@email.com", "tipo": TipoCliente.PESSOA_FISICA, "ativo": False},
+    {"nome": "Henrique", "email": "henrique@email.com", "tipo": TipoCliente.VIP, "ativo": True},
 ]
 
 
